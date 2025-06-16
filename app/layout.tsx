@@ -28,19 +28,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="min-h-screen bg-gray-50">
-          <Toaster   position="top-right"
-        toastOptions={{
-          style: {
-            background: '#fff',
-            color: '#374151',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-            borderRadius: '0.375rem',
-            padding: '0.75rem 1rem',
-          },
-        }} />
-          {/* Rest of your existing code */}
-        </div>
+        
         {children}
       </body>
     </html>

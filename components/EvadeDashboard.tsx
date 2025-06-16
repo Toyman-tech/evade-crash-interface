@@ -130,6 +130,19 @@ export default function Component() {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <div className="">
+                <Toaster position="top-right"
+                    toastOptions={{
+                        style: {
+                            background: '#fff',
+                            color: '#374151',
+                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                            borderRadius: '0.375rem',
+                            padding: '0.75rem 1rem',
+                        },
+                    }} />
+                {/* Rest of your existing code */}
+            </div>
             {/* Navbar */}
             <nav className="bg-white border-b border-gray-200 px-4 py-4 shadow-sm">
                 <div className="flex items-center justify-between mb-3">
@@ -147,51 +160,51 @@ export default function Component() {
 
                 {/* Device ID Input */}
                 <div className="flex justify-between container w-full  max-sm:flex-col mx-auto">
-                <div className="flex w-full ">
-                    <div className="flex items-center justify-center w-full max-w-2xl gap-3">
-                        <label htmlFor="deviceId" className="text-sm font-medium text-gray-700 whitespace-nowrap">
-                            Device ID:
-                        </label>
+                    <div className="flex w-full ">
+                        <div className="flex items-center justify-center w-full max-w-2xl gap-3">
+                            <label htmlFor="deviceId" className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                                Device ID:
+                            </label>
+                            <input
+                                id="deviceId"
+                                type="text"
+                                value={deviceId}
+                                onChange={(e) => setDeviceId(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        handleDeviceIdChange(deviceId)
+                                    }
+                                }}
+                                onBlur={(e) => handleDeviceIdChange(e.target.value)}
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="Enter Evade device ID"
+                            />
+                            <Button
+                                onClick={() => handleDeviceIdChange(deviceId)}
+                                size="sm"
+                                className="bg-blue-600 hover:bg-blue-700"
+                            >
+                                Fetch
+                            </Button>
+                        </div>
+                    </div>
+                    <div className="flex items-center justify-center w-full max-w-2xl gap-3 mt-4 mx-auto">
                         <input
-                            id="deviceId"
                             type="text"
-                            value={deviceId}
-                            onChange={(e) => setDeviceId(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                    handleDeviceIdChange(deviceId)
-                                }
-                            }}
-                            onBlur={(e) => handleDeviceIdChange(e.target.value)}
+                            value={accidentIdToClose}
+                            onChange={(e) => setAccidentIdToClose(e.target.value)}
+                            placeholder="Enter Accident ID to close"
                             className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Enter Evade device ID"
                         />
                         <Button
-                            onClick={() => handleDeviceIdChange(deviceId)}
+                            onClick={handleCloseCase}
                             size="sm"
-                            className="bg-blue-600 hover:bg-blue-700"
+                            variant="destructive"
+                            className="bg-red-600 hover:bg-red-700"
                         >
-                            Fetch
+                            Close Case
                         </Button>
                     </div>
-                </div>
-                <div className="flex items-center justify-center w-full max-w-2xl gap-3 mt-4 mx-auto">
-                    <input
-                        type="text"
-                        value={accidentIdToClose}
-                        onChange={(e) => setAccidentIdToClose(e.target.value)}
-                        placeholder="Enter Accident ID to close"
-                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    />
-                    <Button
-                        onClick={handleCloseCase}
-                        size="sm"
-                        variant="destructive"
-                        className="bg-red-600 hover:bg-red-700"
-                    >
-                        Close Case
-                    </Button>
-                </div>
                 </div>
             </nav>
 
@@ -199,69 +212,69 @@ export default function Component() {
             <div className="px-4 py-6 space-y-6 container mx-auto">
                 {/* Heartbeat Section */}
                 <div className="flex flex-col md:flex-row  w-full md:gap-2">
-                <div className="md:w-[50%]">
-                    <h2 className="text-lg font-semibold  text-gray-900 mb-4">Last Heartbeat</h2>
-                    <Card className="bg-white md:pb-20">
-                        <CardContent className="p-4">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                                    {heartbeat.isOnline ? (
-                                        <Heart className="h-6 w-6 text-red-500 fill-current animate-pulse" />
-                                    ) : (
-                                        <Heart className="h-6 w-6 text-gray-400" />
-                                    )}
-                                </div>
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-2 mb-1">
-                                        <span className="font-medium text-gray-900">
-                                            {heartbeat.isOnline ? "Device Online" : "Device Offline"}
-                                        </span>
+                    <div className="md:w-[50%]">
+                        <h2 className="text-lg font-semibold  text-gray-900 mb-4">Last Heartbeat</h2>
+                        <Card className="bg-white md:pb-20">
+                            <CardContent className="p-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                                         {heartbeat.isOnline ? (
-                                            <Wifi className="h-4 w-4 text-green-500" />
+                                            <Heart className="h-6 w-6 text-red-500 fill-current animate-pulse" />
                                         ) : (
-                                            <WifiOff className="h-4 w-4 text-red-500" />
+                                            <Heart className="h-6 w-6 text-gray-400" />
                                         )}
                                     </div>
-                                    <p className="text-sm text-gray-500">{heartbeat.lastHeartbeat}</p>
-                                    <p className="text-xs text-gray-400">Device ID: {heartbeat.deviceId}</p>
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="font-medium text-gray-900">
+                                                {heartbeat.isOnline ? "Device Online" : "Device Offline"}
+                                            </span>
+                                            {heartbeat.isOnline ? (
+                                                <Wifi className="h-4 w-4 text-green-500" />
+                                            ) : (
+                                                <WifiOff className="h-4 w-4 text-red-500" />
+                                            )}
+                                        </div>
+                                        <p className="text-sm text-gray-500">{heartbeat.lastHeartbeat}</p>
+                                        <p className="text-xs text-gray-400">Device ID: {heartbeat.deviceId}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
 
-                {/* Latest Report (accident_detected) latest emergency */}
-                <div className="md:w-[50%]">
-                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Latest Emergency</h2>
-                    {latestReport && (
-                        <section className="mb-6">
-                            <h2 className="text-lg font-semibold mb-2">Latest Emergency</h2>
-                            <div className="p-4 bg-white rounded shadow-sm border border-blue-300">
-                                <p>
-                                    <strong>Nature:</strong>{" "}
-                                    {latestReport.nature_of_request || "N/A"}
-                                </p>
-                                <p>
-                                    <strong>Date:</strong> {latestReport.created_at}
-                                </p>
-                                <p>
-                                    <strong>Location:</strong> {latestReport.lat},{" "}
-                                    {latestReport.log}
-                                </p>
-                                <p>
-                                    <strong>Status:</strong>{" "}
-                                    {latestReport.closed_status === 1 ? "Closed" : "Open"}
-                                </p>
-                            </div>
-                        </section>
-                    )}
-                    {!latestReport && (<Card className="bg-white">
-                        <CardContent className="p-8 text-center">
-                            <Car className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                            <p className="text-gray-500">No Latestest Emergency</p>
-                        </CardContent>
-                    </Card>)}
-                </div>
+                    {/* Latest Report (accident_detected) latest emergency */}
+                    <div className="md:w-[50%]">
+                        <h2 className="text-lg font-semibold text-gray-900 mb-4">Latest Emergency</h2>
+                        {latestReport && (
+                            <section className="mb-6">
+                                <h2 className="text-lg font-semibold mb-2">Latest Emergency</h2>
+                                <div className="p-4 bg-white rounded shadow-sm border border-blue-300">
+                                    <p>
+                                        <strong>Nature:</strong>{" "}
+                                        {latestReport.nature_of_request || "N/A"}
+                                    </p>
+                                    <p>
+                                        <strong>Date:</strong> {latestReport.created_at}
+                                    </p>
+                                    <p>
+                                        <strong>Location:</strong> {latestReport.lat},{" "}
+                                        {latestReport.log}
+                                    </p>
+                                    <p>
+                                        <strong>Status:</strong>{" "}
+                                        {latestReport.closed_status === 1 ? "Closed" : "Open"}
+                                    </p>
+                                </div>
+                            </section>
+                        )}
+                        {!latestReport && (<Card className="bg-white">
+                            <CardContent className="p-8 text-center">
+                                <Car className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                                <p className="text-gray-500">No Latestest Emergency</p>
+                            </CardContent>
+                        </Card>)}
+                    </div>
                 </div>
 
                 {/* Crash Reports */}
