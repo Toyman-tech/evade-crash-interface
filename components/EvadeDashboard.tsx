@@ -245,7 +245,7 @@ export default function Component() {
 
                     {/* Latest Report (accident_detected) latest emergency */}
                     <div className="md:w-[50%]">
-                        <h2 className="text-lg font-semibold text-gray-900 mb-4">Latest Emergency</h2>
+                        <h2 className="text-lg font-semibold text-gray-900 mb-4 max-sm:pt-3">Latest Emergency</h2>
                         {latestReport && (
                             <section className="mb-6">
                                 <h2 className="text-lg font-semibold mb-2">Latest Emergency</h2>
