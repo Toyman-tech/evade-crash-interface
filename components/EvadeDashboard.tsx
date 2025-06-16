@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { X, Heart, Car, Trash2, Wifi, WifiOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import toast, { Toaster } from 'react-hot-toast'
 import { Card, CardContent } from "@/components/ui/card"
 import axios from "axios"
 
@@ -36,10 +37,43 @@ export default function Component() {
         lastHeartbeat: "",
         deviceId: "",
     })
+    const [accidentIdToClose, setAccidentIdToClose] = useState("")
 
     const [reports, setReports] = useState<AccidentReport[]>([])
     const [selectedReport, setSelectedReport] = useState<AccidentReport | null>(null)
     const [latestReport, setLatestReport] = useState<any | null>(null)
+
+    const handleCloseCase = async () => {
+        if (!accidentIdToClose) {
+            toast.error('Please enter an Accident ID')
+            return
+        }
+
+        const token = "your_token_here"
+        const loadingToast = toast.loading('Closing case...')
+
+        try {
+            const formData = new FormData()
+            formData.append('accident_id', accidentIdToClose)
+
+            const response = await axios.post(
+                `https://zubitechnologies.com/ads_apis/api/close_case?=${encodeURIComponent(accidentIdToClose)}`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            )
+
+            toast.success('Case closed successfully', { id: loadingToast })
+            fetchDeviceData(deviceId)
+            setAccidentIdToClose("")
+        } catch (error) {
+            console.error('Error closing case:', error)
+            toast.error('Failed to close case', { id: loadingToast })
+        }
+    }
 
     const fetchDeviceData = async (id: string) => {
         const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8venViaXRlY2hub2xvZ2llcy5jb20vYWRzX2FwaXMvYXBpL2xvZ2luIiwiaWF0IjoxNzUwMDAzNTY3LCJleHAiOjE3NTAyMTk1NjcsIm5iZiI6MTc1MDAwMzU2NywianRpIjoiMWMxdXdFVmt0TmhvMGJYTSIsInN1YiI6IjEiLCJwcnYiOiJkZjg4M2RiOTdiZDA1ZWY4ZmY4NTA4MmQ2ODZjNDVlODMyZTU5M2E5IiwibmFtZSI6IkFEUyBBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlkIjoxfQ.y2sp-ztqivuRsdzv3Bl52uzv91pUmRFiT5WZ7h93yLg"
@@ -72,7 +106,7 @@ export default function Component() {
 
 
             if (Array.isArray(data.accident_history)) {
-                setReports((data.accident_history.reverse()).slice(0, 5)) // show latest first
+                setReports((data.accident_history.reverse()).slice(0, 3)) // show latest first
             }
         } catch (err) {
             console.error("Failed to fetch data:", err)
@@ -103,7 +137,7 @@ export default function Component() {
                         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                             <span className="text-white font-bold text-sm">E</span>
                         </div>
-                        <h1 className="text-xl font-semibold text-gray-900">Evade Dashboard</h1>
+                        <h1 className="text-xl font-semibold text-gray-900">Evade Production Test Kit</h1>
                     </div>
                     <div className="flex items-center gap-2">
                         <div className={`w-2 h-2 rounded-full ${heartbeat.isOnline ? "bg-green-500" : "bg-red-500"}`} />
@@ -112,7 +146,8 @@ export default function Component() {
                 </div>
 
                 {/* Device ID Input */}
-                <div className="flex w-full justify-center">
+                <div className="flex justify-between container w-full  max-sm:flex-col mx-auto">
+                <div className="flex w-full ">
                     <div className="flex items-center justify-center w-full max-w-2xl gap-3">
                         <label htmlFor="deviceId" className="text-sm font-medium text-gray-700 whitespace-nowrap">
                             Device ID:
@@ -136,18 +171,37 @@ export default function Component() {
                             size="sm"
                             className="bg-blue-600 hover:bg-blue-700"
                         >
-                            Connect
+                            Fetch
                         </Button>
                     </div>
+                </div>
+                <div className="flex items-center justify-center w-full max-w-2xl gap-3 mt-4 mx-auto">
+                    <input
+                        type="text"
+                        value={accidentIdToClose}
+                        onChange={(e) => setAccidentIdToClose(e.target.value)}
+                        placeholder="Enter Accident ID to close"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <Button
+                        onClick={handleCloseCase}
+                        size="sm"
+                        variant="destructive"
+                        className="bg-red-600 hover:bg-red-700"
+                    >
+                        Close Case
+                    </Button>
+                </div>
                 </div>
             </nav>
 
             {/* Main Content */}
             <div className="px-4 py-6 space-y-6 container mx-auto">
                 {/* Heartbeat Section */}
-                <div>
-                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Last Heartbeat</h2>
-                    <Card className="bg-white">
+                <div className="flex flex-col md:flex-row  w-full md:gap-2">
+                <div className="md:w-[50%]">
+                    <h2 className="text-lg font-semibold  text-gray-900 mb-4">Last Heartbeat</h2>
+                    <Card className="bg-white md:pb-20">
                         <CardContent className="p-4">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
@@ -176,12 +230,12 @@ export default function Component() {
                     </Card>
                 </div>
 
-                {/* Latest Report (accident_detected) */}
-                <div>
-                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Latest Reports</h2>
+                {/* Latest Report (accident_detected) latest emergency */}
+                <div className="md:w-[50%]">
+                    <h2 className="text-lg font-semibold text-gray-900 mb-4">Latest Emergency</h2>
                     {latestReport && (
                         <section className="mb-6">
-                            <h2 className="text-lg font-semibold mb-2">Latest Report</h2>
+                            <h2 className="text-lg font-semibold mb-2">Latest Emergency</h2>
                             <div className="p-4 bg-white rounded shadow-sm border border-blue-300">
                                 <p>
                                     <strong>Nature:</strong>{" "}
@@ -204,9 +258,10 @@ export default function Component() {
                     {!latestReport && (<Card className="bg-white">
                         <CardContent className="p-8 text-center">
                             <Car className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                            <p className="text-gray-500">No Latest crash reports</p>
+                            <p className="text-gray-500">No Latestest Emergency</p>
                         </CardContent>
                     </Card>)}
+                </div>
                 </div>
 
                 {/* Crash Reports */}
